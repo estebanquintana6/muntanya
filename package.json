@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon api/index.ts",
     "dev-start": "nodemon --ignore sessions/ api/index.ts --ignore client",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
