@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 
+import { initDb } from "./utils/initDb";
+
 dotenv.config()
 
 const { MONGO_URI } = process.env;
@@ -27,7 +29,7 @@ db.on("error", (err: Error) => {
     setTimeout(() => mongoConnection(), 5000);
 });
 db.once("open", async () => {
-    await mongoConnection();
+    await initDb();
     console.log("Successfully connected to mongo");
 });
 
