@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyPassword = exports.hashPassword = void 0;
+exports.transformUserToPayload = exports.verifyPassword = exports.hashPassword = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const hashPassword = (plainPassword) => __awaiter(void 0, void 0, void 0, function* () {
     const salt = yield bcryptjs_1.default.genSalt(10);
@@ -25,4 +25,12 @@ const verifyPassword = (plainPassword, password) => __awaiter(void 0, void 0, vo
     return isValid;
 });
 exports.verifyPassword = verifyPassword;
+const transformUserToPayload = (user) => {
+    const obj = Object.create(null);
+    Object.keys(user).forEach(key => {
+        obj[key] = user[key];
+    });
+    return obj;
+};
+exports.transformUserToPayload = transformUserToPayload;
 //# sourceMappingURL=passwordUtils.js.map
