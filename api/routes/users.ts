@@ -31,7 +31,7 @@ router.get("/", async (req: Request, res: Response) => {
  */
 router.post("/login", async (req: Request, res: Response) => {
     const { username, password } = req.body;
-  
+
     const { JWT_SECRET: secretKey } = process.env;
   
     if (!secretKey) {
@@ -53,13 +53,13 @@ router.post("/login", async (req: Request, res: Response) => {
     const isMatchingPassword = await verifyPassword(password, user.password);
   
     if (isMatchingPassword) {
-      const payload = transformUserToPayload(user.toObject());
+      const { username, name, role } = user;
   
       jwt.sign(
-        payload,
+        { username, name, role },
         secretKey,
         {
-          expiresIn: "100d",
+          expiresIn: "10d",
         },
         (error, encoded) => {
           if (error) {

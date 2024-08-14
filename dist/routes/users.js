@@ -56,9 +56,9 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
     const isMatchingPassword = yield (0, passwordUtils_1.verifyPassword)(password, user.password);
     if (isMatchingPassword) {
-        const payload = (0, passwordUtils_1.transformUserToPayload)(user.toObject());
-        jsonwebtoken_1.default.sign(payload, secretKey, {
-            expiresIn: "100d",
+        const { username, name, role } = user;
+        jsonwebtoken_1.default.sign({ username, name, role }, secretKey, {
+            expiresIn: "10d",
         }, (error, encoded) => {
             if (error) {
                 console.log(error);
