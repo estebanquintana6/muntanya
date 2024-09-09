@@ -19,6 +19,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
 const initDb_1 = require("./utils/initDb");
 const users_1 = __importDefault(require("./routes/users"));
+const products_1 = __importDefault(require("./routes/products"));
 dotenv_1.default.config();
 const { MONGO_URI } = process.env;
 const app = (0, express_1.default)();
@@ -41,6 +42,7 @@ db.once("open", () => __awaiter(void 0, void 0, void 0, function* () {
 }));
 app.get("/", (req, res) => res.send("Muntanya server up & running"));
 app.use('/users', users_1.default);
+app.use('/products', products_1.default);
 app.listen(4000, () => console.log("Server ready on port 4000."));
 exports.default = app;
 //# sourceMappingURL=index.js.map

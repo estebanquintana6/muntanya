@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import isAuth from "../middlewares/isAuth";
 import User from "../models/User";
 
-import { verifyPassword, transformUserToPayload } from "../utils/passwordUtils";
+import { verifyPassword } from "../utils/passwordUtils";
 
 const router = Router();
 

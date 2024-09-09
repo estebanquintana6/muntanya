@@ -7,6 +7,7 @@ import cors from "cors";
 import { initDb } from "./utils/initDb";
 
 import users from './routes/users';
+import products from './routes/products';
 
 dotenv.config()
 
@@ -41,6 +42,7 @@ db.once("open", async () => {
 app.get("/", (req, res) => res.send("Muntanya server up & running"));
 
 app.use('/users', users);
+app.use('/products', products);
 
 app.listen(4000, () => console.log("Server ready on port 4000."));
 
