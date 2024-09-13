@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const blob_1 = require("@vercel/blob");
 const isAuth_1 = __importDefault(require("../middlewares/isAuth"));
 const Product_1 = __importDefault(require("../models/Product"));
 const router = (0, express_1.Router)();
@@ -52,6 +53,21 @@ router.post("/create", isAuth_1.default, (req, res) => __awaiter(void 0, void 0,
     });
     const product = yield new_product.save();
     res.status(200).json(product);
+}));
+/**
+ * @route DELETE /projects/delete
+ * @desc Delete a product
+ * @params _id
+ * @access Private
+ */
+router.delete("/delete", isAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { _id } = req.body;
+    const to_delete = yield Product_1.default.findById(_id);
+    const { photo_urls } = to_delete;
+    (0, blob_1.del)(photo_urls).then(() => __awaiter(void 0, void 0, void 0, function* () {
+        const deleted = yield to_delete.deleteOne();
+        res.status(200).json(deleted);
+    }));
 }));
 exports.default = router;
 //# sourceMappingURL=products.js.map

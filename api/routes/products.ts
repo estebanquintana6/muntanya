@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import { del } from '@vercel/blob'
 
 import isAuthMiddleware from "../middlewares/isAuth";
 import Product from "../models/Product";
@@ -51,4 +52,25 @@ router.post(
   },
 );
 
+/**
+ * @route DELETE /projects/delete
+ * @desc Delete a product
+ * @params _id
+ * @access Private
+ */
+router.delete(
+  "/delete",
+  isAuthMiddleware,
+  async (req: Request, res: Response) => {
+    const { _id } = req.body;
+
+    const to_delete = await Product.findById(_id);
+
+    const { photo_urls } = to_delete;
+
+    del(photo_urls).then(async () => {
+      const deleted = await to_delete.deleteOne();
+      res.status(200).json(deleted);
+    });
+})
 export default router;
