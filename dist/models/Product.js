@@ -17,6 +17,9 @@ const ProductSchema = new Schema({
     photo_urls: [{
             type: String,
         }],
+    tags: [{
+            type: String,
+        }],
     created_at: {
         type: Date,
         default: Date.now

@@ -39,7 +39,8 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
  * @access Private
  */
 router.post("/create", isAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, photo_urls, description, tags } = req.body;
+    const { title, photo_urls, description, tags: toParseTags } = req.body;
+    const tags = JSON.parse(toParseTags);
     if (!title || !description) {
         res.status(400).json({
             error: "Datos faltantes o incompletos",
@@ -64,11 +65,23 @@ router.post("/create", isAuth_1.default, (req, res) => __awaiter(void 0, void 0,
 router.delete("/delete", isAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { _id } = req.body;
     const to_delete = yield Product_1.default.findById(_id);
+    if (!to_delete) {
+        res.status(200).json({ success: true, msg: "El archivo no existe" });
+        return;
+    }
     const { photo_urls } = to_delete;
-    (0, blob_1.del)(photo_urls).then(() => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (photo_urls.length > 0) {
+            yield (0, blob_1.del)(photo_urls);
+        }
         const deleted = yield to_delete.deleteOne();
         res.status(200).json(deleted);
-    }));
+    }
+    catch (e) {
+        res
+            .status(500)
+            .json({ error: "Error en el servidor al borrar el producto" });
+    }
 }));
 exports.default = router;
 //# sourceMappingURL=products.js.map

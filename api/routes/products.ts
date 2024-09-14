@@ -31,7 +31,9 @@ router.post(
   "/create",
   isAuthMiddleware,
   async (req: Request, res: Response) => {
-    const { title, photo_urls, description, tags } = req.body;
+    const { title, photo_urls, description, tags: toParseTags } = req.body;
+
+    const tags = JSON.parse(toParseTags);
 
     if (!title || !description) {
       res.status(400).json({
@@ -67,12 +69,26 @@ router.delete(
 
     const to_delete = await Product.findById(_id);
 
+    if (!to_delete) {
+      res.status(200).json({ success: true, msg: "El archivo no existe" });
+      return;
+    }
+
     const { photo_urls } = to_delete;
 
-    del(photo_urls).then(async () => {
+    try {
+      if (photo_urls.length > 0) {
+        await del(photo_urls);
+      }
+
       const deleted = await to_delete.deleteOne();
+
       res.status(200).json(deleted);
-    });
+    } catch (e) {
+      res
+        .status(500)
+        .json({ error: "Error en el servidor al borrar el producto" });
+    }
   },
 );
 export default router;
