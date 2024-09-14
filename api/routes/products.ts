@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { del } from '@vercel/blob'
+import { del } from "@vercel/blob";
 
 import isAuthMiddleware from "../middlewares/isAuth";
 import Product from "../models/Product";
@@ -31,19 +31,20 @@ router.post(
   "/create",
   isAuthMiddleware,
   async (req: Request, res: Response) => {
-    const { title, photo_urls, description } = req.body;
+    const { title, photo_urls, description, tags } = req.body;
 
     if (!title || !description) {
-        res.status(400).json({
-          error: "Datos faltantes o incompletos",
-        });
-        return;
+      res.status(400).json({
+        error: "Datos faltantes o incompletos",
+      });
+      return;
     }
 
     const new_product = new Product({
-        title,
-        description,
-        photo_urls,
+      title,
+      description,
+      photo_urls,
+      tags,
     });
 
     const product = await new_product.save();
@@ -72,5 +73,6 @@ router.delete(
       const deleted = await to_delete.deleteOne();
       res.status(200).json(deleted);
     });
-})
+  },
+);
 export default router;

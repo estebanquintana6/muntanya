@@ -39,7 +39,7 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
  * @access Private
  */
 router.post("/create", isAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, photo_urls, description } = req.body;
+    const { title, photo_urls, description, tags } = req.body;
     if (!title || !description) {
         res.status(400).json({
             error: "Datos faltantes o incompletos",
@@ -50,6 +50,7 @@ router.post("/create", isAuth_1.default, (req, res) => __awaiter(void 0, void 0,
         title,
         description,
         photo_urls,
+        tags,
     });
     const product = yield new_product.save();
     res.status(200).json(product);
