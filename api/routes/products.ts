@@ -22,6 +22,23 @@ router.get("/", async (req: Request, res: Response) => {
 });
 
 /**
+ * @route GET /product/?
+ * @desc Get all products
+ * @params email
+ * @access Public
+ */
+router.get("/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const product = await Product.findById(id);
+    res.status(200).send(product);
+  } catch {
+    res.status(404).send({ error: "El producto no existe"});
+  }
+})
+
+/**
  * @route POST /projects/create
  * @desc Create a new product
  * @params title, description, photo_urls

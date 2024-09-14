@@ -33,6 +33,22 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 }));
 /**
+ * @route GET /product/?
+ * @desc Get all products
+ * @params email
+ * @access Public
+ */
+router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    try {
+        const product = yield Product_1.default.findById(id);
+        res.status(200).send(product);
+    }
+    catch (_a) {
+        res.status(404).send({ error: "El producto no existe" });
+    }
+}));
+/**
  * @route POST /projects/create
  * @desc Create a new product
  * @params title, description, photo_urls
