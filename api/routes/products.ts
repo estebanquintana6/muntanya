@@ -82,7 +82,21 @@ router.post(
   "/update",
   isAuthMiddleware,
   async (req: Request, res: Response) => {
-    const { id, title, description, tags: toParseTags } = req.body;
+    const {
+      id,
+      title,
+      description,
+      tags: toParseTags,
+      toDeletePhotos,
+      toAddPhotos,
+    } = req.body as {
+      id: string;
+      title: string;
+      description: string;
+      tags: string;
+      toDeletePhotos: string[];
+      toAddPhotos: string[];
+    };
 
     const tags = JSON.parse(toParseTags);
 
@@ -96,15 +110,23 @@ router.post(
     const to_update = await Product.findById(id);
 
     if (!to_update) {
-      res.status(404).json({ error: "El producto no existe"});
+      res.status(404).json({ error: "El producto no existe" });
       return;
     }
+
+    const { photo_urls } = to_update;
+
+    const new_photo_array = [
+      ...photo_urls.filter((url) => !toDeletePhotos.includes(url)),
+      ...toAddPhotos,
+    ];
 
     const updated = await to_update.updateOne({
       title,
       description,
-      tags
-    })
+      tags,
+      photo_urls: new_photo_array,
+    });
 
     res.status(200).json(updated);
   },

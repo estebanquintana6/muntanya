@@ -79,7 +79,7 @@ router.post("/create", isAuth_1.default, (req, res) => __awaiter(void 0, void 0,
  * @access Private
  */
 router.post("/update", isAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id, title, description, tags: toParseTags } = req.body;
+    const { id, title, description, tags: toParseTags, toDeletePhotos, toAddPhotos, } = req.body;
     const tags = JSON.parse(toParseTags);
     if (!title || !description) {
         res.status(400).json({
@@ -92,10 +92,16 @@ router.post("/update", isAuth_1.default, (req, res) => __awaiter(void 0, void 0,
         res.status(404).json({ error: "El producto no existe" });
         return;
     }
+    const { photo_urls } = to_update;
+    const new_photo_array = [
+        ...photo_urls.filter((url) => !toDeletePhotos.includes(url)),
+        ...toAddPhotos,
+    ];
     const updated = yield to_update.updateOne({
         title,
         description,
-        tags
+        tags,
+        photo_urls: new_photo_array,
     });
     res.status(200).json(updated);
 }));
