@@ -55,7 +55,7 @@ router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
  * @access Private
  */
 router.post("/create", isAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, photo_urls, description, tags: toParseTags } = req.body;
+    const { title, photo_urls, description, tags: toParseTags, subtitle, } = req.body;
     const tags = JSON.parse(toParseTags);
     if (!title || !description) {
         res.status(400).json({
@@ -65,6 +65,7 @@ router.post("/create", isAuth_1.default, (req, res) => __awaiter(void 0, void 0,
     }
     const new_product = new Product_1.default({
         title,
+        subtitle,
         description,
         photo_urls,
         tags,
@@ -79,7 +80,7 @@ router.post("/create", isAuth_1.default, (req, res) => __awaiter(void 0, void 0,
  * @access Private
  */
 router.post("/update", isAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id, title, description, tags: toParseTags, toDeletePhotos, toAddPhotos, } = req.body;
+    const { id, title, subtitle, description, tags: toParseTags, toDeletePhotos, toAddPhotos, } = req.body;
     const tags = JSON.parse(toParseTags);
     if (!title || !description) {
         res.status(400).json({
@@ -99,6 +100,7 @@ router.post("/update", isAuth_1.default, (req, res) => __awaiter(void 0, void 0,
     ];
     const updated = yield to_update.updateOne({
         title,
+        subtitle,
         description,
         tags,
         photo_urls: new_photo_array,

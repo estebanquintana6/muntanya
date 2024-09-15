@@ -10,6 +10,10 @@ const ProductSchema = new Schema({
         type: String,
         required: true,
     },
+    subtitle: {
+        type: String,
+        required: false,
+    },
     description: {
         type: String,
         required: true

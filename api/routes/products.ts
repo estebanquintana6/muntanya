@@ -48,7 +48,13 @@ router.post(
   "/create",
   isAuthMiddleware,
   async (req: Request, res: Response) => {
-    const { title, photo_urls, description, tags: toParseTags } = req.body;
+    const {
+      title,
+      photo_urls,
+      description,
+      tags: toParseTags,
+      subtitle,
+    } = req.body;
 
     const tags = JSON.parse(toParseTags);
 
@@ -61,6 +67,7 @@ router.post(
 
     const new_product = new Product({
       title,
+      subtitle,
       description,
       photo_urls,
       tags,
@@ -85,6 +92,7 @@ router.post(
     const {
       id,
       title,
+      subtitle,
       description,
       tags: toParseTags,
       toDeletePhotos,
@@ -92,6 +100,7 @@ router.post(
     } = req.body as {
       id: string;
       title: string;
+      subtitle: string;
       description: string;
       tags: string;
       toDeletePhotos: string[];
@@ -123,6 +132,7 @@ router.post(
 
     const updated = await to_update.updateOne({
       title,
+      subtitle,
       description,
       tags,
       photo_urls: new_photo_array,
