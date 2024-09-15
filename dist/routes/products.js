@@ -51,7 +51,7 @@ router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 /**
  * @route POST /projects/create
  * @desc Create a new product
- * @params title, description, photo_urls
+ * @params title, description, photo_urls, tags
  * @access Private
  */
 router.post("/create", isAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -71,6 +71,33 @@ router.post("/create", isAuth_1.default, (req, res) => __awaiter(void 0, void 0,
     });
     const product = yield new_product.save();
     res.status(200).json(product);
+}));
+/**
+ * @route POST /projects/update
+ * @desc Update a new product
+ * @params title, description, photo_urls
+ * @access Private
+ */
+router.post("/update", isAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id, title, description, tags: toParseTags } = req.body;
+    const tags = JSON.parse(toParseTags);
+    if (!title || !description) {
+        res.status(400).json({
+            error: "Datos faltantes o incompletos",
+        });
+        return;
+    }
+    const to_update = yield Product_1.default.findById(id);
+    if (!to_update) {
+        res.status(404).json({ error: "El producto no existe" });
+        return;
+    }
+    const updated = yield to_update.updateOne({
+        title,
+        description,
+        tags
+    });
+    res.status(200).json(updated);
 }));
 /**
  * @route DELETE /projects/delete

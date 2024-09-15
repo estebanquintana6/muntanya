@@ -34,14 +34,14 @@ router.get("/:id", async (req: Request, res: Response) => {
     const product = await Product.findById(id);
     res.status(200).send(product);
   } catch {
-    res.status(404).send({ error: "El producto no existe"});
+    res.status(404).send({ error: "El producto no existe" });
   }
-})
+});
 
 /**
  * @route POST /projects/create
  * @desc Create a new product
- * @params title, description, photo_urls
+ * @params title, description, photo_urls, tags
  * @access Private
  */
 router.post(
@@ -69,6 +69,44 @@ router.post(
     const product = await new_product.save();
 
     res.status(200).json(product);
+  },
+);
+
+/**
+ * @route POST /projects/update
+ * @desc Update a new product
+ * @params title, description, photo_urls
+ * @access Private
+ */
+router.post(
+  "/update",
+  isAuthMiddleware,
+  async (req: Request, res: Response) => {
+    const { id, title, description, tags: toParseTags } = req.body;
+
+    const tags = JSON.parse(toParseTags);
+
+    if (!title || !description) {
+      res.status(400).json({
+        error: "Datos faltantes o incompletos",
+      });
+      return;
+    }
+
+    const to_update = await Product.findById(id);
+
+    if (!to_update) {
+      res.status(404).json({ error: "El producto no existe"});
+      return;
+    }
+
+    const updated = await to_update.updateOne({
+      title,
+      description,
+      tags
+    })
+
+    res.status(200).json(updated);
   },
 );
 
