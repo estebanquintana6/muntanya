@@ -16,6 +16,10 @@ const ProductSchema = new Schema({
   tags: [{
     type: String,
   }],
+  favorite: {
+    type: Boolean,
+    default: false,
+  },
   created_at: {
     type: Date,
     default: Date.now

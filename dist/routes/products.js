@@ -106,6 +106,29 @@ router.post("/update", isAuth_1.default, (req, res) => __awaiter(void 0, void 0,
     res.status(200).json(updated);
 }));
 /**
+ * @route POST /projects/favorite
+ * @desc Favorite/Unfavorite a product
+ * @params id, favorite
+ * @access Private
+ */
+router.post("/favorite", isAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id, favorite = false } = req.body;
+    if (!id) {
+        res.status(400).json({ error: "Falta información" });
+    }
+    try {
+        const to_update = yield Product_1.default.findById(id);
+        const updated = yield to_update.updateOne({
+            favorite,
+        });
+        res.status(200).json(updated);
+    }
+    catch (e) {
+        console.log(e);
+        res.status(500).json({ error: "Error al actualizar el producto" });
+    }
+}));
+/**
  * @route DELETE /projects/delete
  * @desc Delete a product
  * @params _id
