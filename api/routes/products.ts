@@ -9,7 +9,6 @@ const router = Router();
 /**
  * @route GET /products
  * @desc Get all products
- * @params email
  * @access Public
  */
 router.get("/", async (req: Request, res: Response) => {
@@ -23,8 +22,8 @@ router.get("/", async (req: Request, res: Response) => {
 
 /**
  * @route GET /product/?
- * @desc Get all products
- * @params email
+ * @desc Get product by id
+ * @params id
  * @access Public
  */
 router.get("/:id", async (req: Request, res: Response) => {

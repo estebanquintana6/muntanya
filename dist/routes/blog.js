@@ -20,13 +20,26 @@ const router = (0, express_1.Router)();
 /**
  * @route GET /blog
  * @desc Get all blog entries
- * @params email
  * @access Public
  */
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const products = yield BlogEntry_1.default.find({});
-        res.status(200).send(products);
+        const blogEntries = yield BlogEntry_1.default.find({});
+        res.status(200).send(blogEntries);
+    }
+    catch (_a) {
+        res.status(500).send("Error en servicio. Intentar más tarde.");
+    }
+}));
+/**
+ * @route GET /blog/recent
+ * @desc Get the 3 latest blog entries
+ * @access Public
+ */
+router.get("/recent", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const blogEntries = yield BlogEntry_1.default.find({}).sort({ created_at: -1 }).limit(3);
+        res.status(200).send(blogEntries);
     }
     catch (_a) {
         res.status(500).send("Error en servicio. Intentar más tarde.");
@@ -41,8 +54,8 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        const product = yield BlogEntry_1.default.findById(id);
-        res.status(200).send(product);
+        const blogEntry = yield BlogEntry_1.default.findById(id);
+        res.status(200).send(blogEntry);
     }
     catch (_a) {
         res.status(404).send({ error: "La entrada de blog no existe" });

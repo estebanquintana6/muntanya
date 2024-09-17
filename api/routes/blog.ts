@@ -9,13 +9,26 @@ const router = Router();
 /**
  * @route GET /blog
  * @desc Get all blog entries
- * @params email
  * @access Public
  */
 router.get("/", async (req: Request, res: Response) => {
   try {
-    const products = await BlogEntry.find({});
-    res.status(200).send(products);
+    const blogEntries = await BlogEntry.find({});
+    res.status(200).send(blogEntries);
+  } catch {
+    res.status(500).send("Error en servicio. Intentar más tarde.");
+  }
+});
+
+/**
+ * @route GET /blog/recent
+ * @desc Get the 3 latest blog entries
+ * @access Public
+ */
+router.get("/recent", async (req: Request, res: Response) => {
+  try {
+    const blogEntries = await BlogEntry.find({}).sort({ created_at: -1 }).limit(3);
+    res.status(200).send(blogEntries);
   } catch {
     res.status(500).send("Error en servicio. Intentar más tarde.");
   }
@@ -31,8 +44,8 @@ router.get("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const product = await BlogEntry.findById(id);
-    res.status(200).send(product);
+    const blogEntry = await BlogEntry.findById(id);
+    res.status(200).send(blogEntry);
   } catch {
     res.status(404).send({ error: "La entrada de blog no existe" });
   }

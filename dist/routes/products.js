@@ -20,7 +20,6 @@ const router = (0, express_1.Router)();
 /**
  * @route GET /products
  * @desc Get all products
- * @params email
  * @access Public
  */
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -34,8 +33,8 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 /**
  * @route GET /product/?
- * @desc Get all products
- * @params email
+ * @desc Get product by id
+ * @params id
  * @access Public
  */
 router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
