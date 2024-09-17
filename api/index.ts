@@ -8,6 +8,7 @@ import { initDb } from "./utils/initDb";
 
 import users from './routes/users';
 import products from './routes/products';
+import blog from './routes/blog';
 
 dotenv.config()
 
@@ -43,6 +44,7 @@ app.get("/", (req, res) => res.send("Muntanya server up & running"));
 
 app.use('/users', users);
 app.use('/products', products);
+app.use('/blog', blog);
 
 app.listen(4000, () => console.log("Server ready on port 4000."));
 
