@@ -48,6 +48,26 @@ router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 }));
 /**
+ * @route GET /products/related
+ * @desc Get related for a product
+ * @params product_id
+ * @access Public
+ */
+router.get("/related/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    try {
+        const products = yield Product_1.default.find({ _id: { $nin: id } }).limit(3);
+        res.status(200).json(products);
+        return;
+    }
+    catch (_a) {
+        res.status(500).json({
+            error: "Error en servicio. Intentar más tarde.",
+        });
+        return;
+    }
+}));
+/**
  * @route POST /projects/create
  * @desc Create a new product
  * @params title, description, photo_urls, tags
