@@ -32,6 +32,21 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 }));
 /**
+ * @route GET /favorite
+ * @desc Fetch favorite products
+ * @params none
+ * @access Public
+ */
+router.get("/favorite", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const products = yield Product_1.default.find({ favorite: true }, {}, { sort: { created_at: -1 } }).limit(4);
+        res.status(200).send(products);
+    }
+    catch (_a) {
+        res.status(200).send([]);
+    }
+}));
+/**
  * @route GET /product/?
  * @desc Get product by id
  * @params id

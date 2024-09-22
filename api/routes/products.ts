@@ -21,6 +21,25 @@ router.get("/", async (req: Request, res: Response) => {
 });
 
 /**
+ * @route GET /favorite
+ * @desc Fetch favorite products
+ * @params none
+ * @access Public
+ */
+router.get("/favorite", async (req: Request, res: Response) => {
+  try {
+    const products = await Product.find(
+      { favorite: true },
+      {},
+      { sort: { created_at: -1 } },
+    ).limit(4);
+    res.status(200).send(products);
+  } catch {
+    res.status(200).send([]);
+  }
+});
+
+/**
  * @route GET /product/?
  * @desc Get product by id
  * @params id
