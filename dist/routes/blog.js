@@ -24,7 +24,7 @@ const router = (0, express_1.Router)();
  */
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const blogEntries = yield BlogEntry_1.default.find({});
+        const blogEntries = yield BlogEntry_1.default.find({}).sort({ created_at: -1 });
         res.status(200).send(blogEntries);
     }
     catch (_a) {
