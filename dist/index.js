@@ -21,6 +21,7 @@ const initDb_1 = require("./utils/initDb");
 const users_1 = __importDefault(require("./routes/users"));
 const products_1 = __importDefault(require("./routes/products"));
 const blog_1 = __importDefault(require("./routes/blog"));
+const quoter_1 = __importDefault(require("./routes/quoter"));
 dotenv_1.default.config();
 const { MONGO_URI } = process.env;
 const app = (0, express_1.default)();
@@ -45,6 +46,7 @@ app.get("/", (req, res) => res.send("Muntanya server up & running"));
 app.use('/users', users_1.default);
 app.use('/products', products_1.default);
 app.use('/blog', blog_1.default);
+app.use('/quoter', quoter_1.default);
 app.listen(4000, () => console.log("Server ready on port 4000."));
 exports.default = app;
 //# sourceMappingURL=index.js.map
