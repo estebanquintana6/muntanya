@@ -27,7 +27,9 @@ router.get("/", async (req: Request, res: Response) => {
  */
 router.get("/recent", async (req: Request, res: Response) => {
   try {
-    const blogEntries = await BlogEntry.find({}).sort({ created_at: -1 }).limit(3);
+    const blogEntries = await BlogEntry.find({})
+      .sort({ created_at: -1 })
+      .limit(3);
     res.status(200).send(blogEntries);
   } catch {
     res.status(500).send("Error en servicio. Intentar más tarde.");
@@ -93,7 +95,7 @@ router.post(
 );
 
 /**
- * @route POST /projects/update
+ * @route POST /blog/update
  * @desc Update a new product
  * @params title, description, photo_urls
  * @access Private
@@ -156,7 +158,30 @@ router.post(
 );
 
 /**
- * @route DELETE /projects/delete
+ * @route GET /blog/related
+ * @desc Get related for a product
+ * @params product_id
+ * @access Public
+ */
+router.get("/related/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const blogEntries = await BlogEntry.find({ _id: { $nin: id } })
+      .sort({ created_at: -1 })
+      .limit(3);
+    res.status(200).json(blogEntries);
+    return;
+  } catch {
+    res.status(500).json({
+      error: "Error en servicio. Intentar más tarde.",
+    });
+    return;
+  }
+});
+
+/**
+ * @route DELETE /blog/delete
  * @desc Delete a product
  * @params _id
  * @access Private

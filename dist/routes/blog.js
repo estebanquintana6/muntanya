@@ -38,7 +38,9 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
  */
 router.get("/recent", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const blogEntries = yield BlogEntry_1.default.find({}).sort({ created_at: -1 }).limit(3);
+        const blogEntries = yield BlogEntry_1.default.find({})
+            .sort({ created_at: -1 })
+            .limit(3);
         res.status(200).send(blogEntries);
     }
     catch (_a) {
@@ -87,7 +89,7 @@ router.post("/create", isAuth_1.default, (req, res) => __awaiter(void 0, void 0,
     res.status(200).json(blog_entry);
 }));
 /**
- * @route POST /projects/update
+ * @route POST /blog/update
  * @desc Update a new product
  * @params title, description, photo_urls
  * @access Private
@@ -121,7 +123,29 @@ router.post("/update", isAuth_1.default, (req, res) => __awaiter(void 0, void 0,
     res.status(200).json(updated);
 }));
 /**
- * @route DELETE /projects/delete
+ * @route GET /blog/related
+ * @desc Get related for a product
+ * @params product_id
+ * @access Public
+ */
+router.get("/related/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    try {
+        const blogEntries = yield BlogEntry_1.default.find({ _id: { $nin: id } })
+            .sort({ created_at: -1 })
+            .limit(3);
+        res.status(200).json(blogEntries);
+        return;
+    }
+    catch (_a) {
+        res.status(500).json({
+            error: "Error en servicio. Intentar más tarde.",
+        });
+        return;
+    }
+}));
+/**
+ * @route DELETE /blog/delete
  * @desc Delete a product
  * @params _id
  * @access Private
