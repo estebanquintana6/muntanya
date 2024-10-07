@@ -32,6 +32,38 @@ router.get("/", isAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0
     }
 }));
 /**
+ * @route GET /quoter/:id
+ * @desc Get all contacts
+ * @access Private
+ */
+router.get("/:id", isAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    try {
+        const quote = yield Contact_1.default.findById(id);
+        res.status(200).json(quote);
+        return;
+    }
+    catch (e) {
+        res.status(500).json({ error: "No se pudo obtener el contacto" });
+    }
+}));
+/**
+ * @route POST /quoter/attend
+ * @desc Mark a quote as attended
+ * @access Private
+ */
+router.post("/attend", isAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { _id, attended } = req.body;
+    try {
+        const quote = yield Contact_1.default.findByIdAndUpdate(_id, { attended });
+        res.status(200).json(quote);
+        return;
+    }
+    catch (e) {
+        res.status(500).json({ error: "La cotización no se pudo actualizar" });
+    }
+}));
+/**
  * @route DELETE /quoter/delete
  * @desc delete a quoter by id
  * @access Private
