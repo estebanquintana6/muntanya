@@ -40,6 +40,10 @@ const ContactSchema = new Schema({
         type: String,
         required: true,
     },
+    attended: {
+        type: Boolean,
+        default: false,
+    },
     created_at: {
         type: Date,
         default: Date.now
