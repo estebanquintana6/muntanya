@@ -53,9 +53,9 @@ router.get("/:id", isAuth_1.default, (req, res) => __awaiter(void 0, void 0, voi
  * @access Private
  */
 router.post("/attend", isAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { _id, attended } = req.body;
+    const { id, attended } = req.body;
     try {
-        const quote = yield Contact_1.default.findByIdAndUpdate(_id, { attended });
+        const quote = yield Contact_1.default.findByIdAndUpdate(id, { attended });
         res.status(200).json(quote);
         return;
     }

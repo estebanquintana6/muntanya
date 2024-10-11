@@ -55,9 +55,9 @@ router.post(
   "/attend",
   isAuthMiddleware,
   async (req: Request, res: Response) => {
-    const { _id, attended }: { _id: string; attended: boolean } = req.body;
+    const { id, attended }: { id: string; attended: boolean } = req.body;
     try {
-      const quote = await Contact.findByIdAndUpdate(_id, { attended });
+      const quote = await Contact.findByIdAndUpdate(id, { attended });
       res.status(200).json(quote);
       return;
     } catch (e) {
