@@ -14,13 +14,13 @@ const router = Router();
  * @params email
  * @access Private
  */
-router.get("/", async (req: Request, res: Response) => {
-    try {
-      const users = await User.find({}).select(["-password"]);
-      res.status(200).send(users);
-    } catch {
-      res.status(500).send("Error en servicio. Intentar más tarde.");
-    }
+router.get("/", isAuth, async (req: Request, res: Response) => {
+  try {
+    const users = await User.find({}).select(["-password"]);
+    res.status(200).send(users);
+  } catch {
+    res.status(500).send("Error en servicio. Intentar más tarde.");
+  }
 });
 
 /**
@@ -30,57 +30,90 @@ router.get("/", async (req: Request, res: Response) => {
  * @access Public
  */
 router.post("/login", async (req: Request, res: Response) => {
-    const { username, password } = req.body;
+  const { username, password } = req.body;
 
-    const { JWT_SECRET: secretKey } = process.env;
-  
-    if (!secretKey) {
-      res.status(500).json({
-        error: "Presentamos errores en el servidor, favor de comunicarse con el desarrollador.",
-      });
-      return;
-    }
-  
-    const user = await User.findOne({ username });
-  
-    if (!user) {
-      res.status(400).json({
-        error: "Datos incorrectos",
-      });
-      return;
-    }
-  
-    const isMatchingPassword = await verifyPassword(password, user.password);
-  
-    if (isMatchingPassword) {
-      const { username, name, role } = user;
-  
-      jwt.sign(
-        { username, name, role },
-        secretKey,
-        {
-          expiresIn: "10d",
-        },
-        (error, encoded) => {
-          if (error) {
-            console.log(error);
-            res.status(401).json({
-              error: "Usuario no autorizado.",
-            });
-            return;
-          }
-  
-          res.status(200).json({
-            success: true,
-            encoded,
+  const { JWT_SECRET: secretKey } = process.env;
+
+  if (!secretKey) {
+    res.status(500).json({
+      error:
+        "Presentamos errores en el servidor, favor de comunicarse con el desarrollador.",
+    });
+    return;
+  }
+
+  const user = await User.findOne({ username });
+
+  if (!user) {
+    res.status(400).json({
+      error: "Datos incorrectos",
+    });
+    return;
+  }
+
+  const isMatchingPassword = await verifyPassword(password, user.password);
+
+  if (isMatchingPassword) {
+    const { username, name, role } = user;
+
+    jwt.sign(
+      { username, name, role },
+      secretKey,
+      {
+        expiresIn: "10d",
+      },
+      (error, encoded) => {
+        if (error) {
+          console.log(error);
+          res.status(401).json({
+            error: "Usuario no autorizado.",
           });
-        },
-      );
-      return;
-    } else {
-      res.status(400).json({ error: "Los datos de acceso son incorrectos" });
-      return;
-    }
-  });
+          return;
+        }
+
+        res.status(200).json({
+          success: true,
+          encoded,
+        });
+      },
+    );
+    return;
+  } else {
+    res.status(400).json({ error: "Los datos de acceso son incorrectos" });
+    return;
+  }
+});
+
+/**
+ * @route DELETE /users/delete
+ * @desc Deletes a user by id
+ * @params id
+ * @access Public
+ */
+router.delete("/delete", isAuth, async (req: Request, res: Response) => {
+  const { headers, body } = req;
+  const { authorization } = headers;
+  const { id } = body;
+
+  const { username }: typeof User.prototype = jwt.decode(authorization);
+
+  const user = await User.findOne({ username });
+
+  const { role } = user;
+
+  if (role !== "SUPERADMIN") {
+    res
+      .status(401)
+      .json({ error: "Se necesitan permisos de superadmin para esta acción" });
+    return;
+  }
+
+  try {
+    const deleted = await User.findByIdAndDelete(id);
+    res.status(200).json(deleted);
+  } catch (e) {
+    res.status(500).json(e);
+  }
+});
 
 export default router;

@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const isAuth_1 = __importDefault(require("../middlewares/isAuth"));
 const User_1 = __importDefault(require("../models/User"));
 const passwordUtils_1 = require("../utils/passwordUtils");
 const router = (0, express_1.Router)();
@@ -23,7 +24,7 @@ const router = (0, express_1.Router)();
  * @params email
  * @access Private
  */
-router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/", isAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield User_1.default.find({}).select(["-password"]);
         res.status(200).send(users);
@@ -77,6 +78,33 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     else {
         res.status(400).json({ error: "Los datos de acceso son incorrectos" });
         return;
+    }
+}));
+/**
+ * @route DELETE /users/delete
+ * @desc Deletes a user by id
+ * @params id
+ * @access Public
+ */
+router.delete("/delete", isAuth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { headers, body } = req;
+    const { authorization } = headers;
+    const { id } = body;
+    const { username } = jsonwebtoken_1.default.decode(authorization);
+    const user = yield User_1.default.findOne({ username });
+    const { role } = user;
+    if (role !== "SUPERADMIN") {
+        res
+            .status(401)
+            .json({ error: "Se necesitan permisos de superadmin para esta acción" });
+        return;
+    }
+    try {
+        const deleted = yield User_1.default.findByIdAndDelete(id);
+        res.status(200).json(deleted);
+    }
+    catch (e) {
+        res.status(500).json(e);
     }
 }));
 exports.default = router;
