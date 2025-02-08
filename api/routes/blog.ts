@@ -29,7 +29,7 @@ router.get("/recent", async (req: Request, res: Response) => {
   try {
     const blogEntries = await BlogEntry.find({})
       .sort({ created_at: -1 })
-      .limit(3);
+      .limit(12);
     res.status(200).send(blogEntries);
   } catch {
     res.status(500).send("Error en servicio. Intentar más tarde.");

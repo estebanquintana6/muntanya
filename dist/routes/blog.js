@@ -40,7 +40,7 @@ router.get("/recent", (req, res) => __awaiter(void 0, void 0, void 0, function* 
     try {
         const blogEntries = yield BlogEntry_1.default.find({})
             .sort({ created_at: -1 })
-            .limit(3);
+            .limit(12);
         res.status(200).send(blogEntries);
     }
     catch (_a) {
